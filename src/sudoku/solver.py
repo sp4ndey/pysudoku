@@ -8,9 +8,9 @@ class SudokuSolver:
     def __init__(self, grid):
         self.grid = grid
         self.grid_size = self.grid.size
-        self.solved = False
         self.counter = 0
         self.time = 0
+        self.solutions = []
 
     def __set(self, x, y, value):
         self.counter += 1
@@ -35,7 +35,8 @@ class SudokuSolver:
 
     def __solve(self, x, y):
         if x == self.grid_size:
-            return True
+            self.solutions.append(self.grid.clone())
+            return
 
         x1, y1 = self.__next_coordinate(x, y)
 
@@ -51,20 +52,23 @@ class SudokuSolver:
             if self.__solve(x1, y1):
                 return True
             self.grid[x][y] = 0
-        return False
 
     def solve(self):
         print('Crunching numbers...')
         start = time.time()
-        self.solved = self.__solve(0, 0)
+        self.__solve(0, 0)
         self.time = time.time() - start
 
-        if self.solved:
+        if not self.solutions:
+            print('No solutions found.')
+        elif len(self.solutions) > 1:
+            print(f'Invalid grid - {len(self.solutions)} solutions found.')
+        else:
             print()
-            GridPrinter(self.grid).display()
+            GridPrinter(self.solutions[0]).display()
             print()
             self.print_stats()
-            return self.grid
+            return self.solutions[0]
         return None
 
     def print_stats(self):

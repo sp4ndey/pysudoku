@@ -24,3 +24,6 @@ class Grid:
             range(s * (row // s), s * (row // s) + s),
             range(s * (col // s), s * (col // s) + s)
         )
+
+    def clone(self):
+        return Grid(self.grid)
